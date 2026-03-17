@@ -135,6 +135,9 @@ function loadPage(page) {
         case 'settings':
             html = renderSettings();
             break;
+        case 'sentos':
+            html = renderSentos();
+            break;
         default:
             html = `
                 <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:60vh; color:var(--text-tertiary); gap:16px;">
@@ -559,14 +562,14 @@ function renderModulesMenu() {
         </div>
 
         <div class="module-group">
-            <h3 class="section-title">Kurumsal & Takım</h3>
+            <h3 class="section-title">Entegrasyonlar</h3>
             <div class="module-list">
-                <div class="module-item" onclick="mobileNav('personel')">
+                <div class="module-item" onclick="mobileNav('sentos')">
                     <div class="module-left">
-                        <div class="module-icon" style="color:var(--green-neon);"><i data-feather="user-check"></i></div>
+                        <div class="module-icon" style="color:var(--blue-neon);"><i data-feather="repeat"></i></div>
                         <div class="module-info">
-                            <span class="module-title">Personel (İK)</span>
-                            <span class="module-desc">Çalışan ekipler, izinler ve mesailer</span>
+                            <span class="module-title">Sentos (Pazaryeri)</span>
+                            <span class="module-desc">Trendyol, Hepsiburada, Amazon Senk.</span>
                         </div>
                     </div>
                     <i data-feather="chevron-right" class="module-arrow"></i>
@@ -574,6 +577,100 @@ function renderModulesMenu() {
             </div>
         </div>
     `;
+}
+
+// 6. SENTOS ENTEGRASYONU
+function renderSentos() {
+    const s = SentosService.settings;
+    return `
+        <div class="flex-between mb-4">
+            <button onclick="mobileNav('operations')" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.95rem;">
+                <i data-feather="arrow-left" style="width:20px;"></i> Geri
+            </button>
+            <div class="page-title" style="margin-bottom:0; font-size:1.2rem;">Sentos Entegrasyonu</div>
+        </div>
+
+        <div class="hero-card mb-3" style="background:var(--bg-surface-elevated); border:1px solid var(--border-light);">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                <div style="width:40px; height:40px; border-radius:12px; background:rgba(10,132,255,0.1); color:var(--blue-neon); display:flex; align-items:center; justify-content:center;">
+                    <i data-feather="refresh-cw"></i>
+                </div>
+                <div>
+                    <div style="font-size:0.9rem; font-weight:700; color:#fff;">Otomatik Senkronizasyon</div>
+                    <div style="font-size:0.75rem; color:var(--text-tertiary);">Durum: <span style="color:${s.status === 'active' ? 'var(--green-neon)' : 'var(--red-neon)'}; font-weight:800;">${s.status === 'active' ? 'AKTİF' : 'PASİF'}</span></div>
+                </div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <button class="btn btn-outline" style="font-size:0.8rem; padding:12px;" onclick="syncSentos('products')">
+                    <i data-feather="upload-cloud" style="width:14px; margin-right:6px;"></i> Stok Gönder
+                </button>
+                <button class="btn btn-outline" style="font-size:0.8rem; padding:12px;" onclick="syncSentos('orders')">
+                    <i data-feather="download-cloud" style="width:14px; margin-right:6px;"></i> Sipariş Çek
+                </button>
+            </div>
+        </div>
+
+        <div class="section-title mb-2">API AYARLARI</div>
+        <div class="form-group">
+            <label class="form-label">Sentos API Key</label>
+            <input id="sentos_key" class="form-input" type="password" value="${s.apiKey}" placeholder="API anahtarınızı girin">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Sentos API Secret</label>
+            <input id="sentos_secret" class="form-input" type="password" value="${s.apiSecret}" placeholder="API şifrenizi girin">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Entegrasyon Durumu</label>
+            <select id="sentos_status" class="form-select">
+                <option value="passive" ${s.status === 'passive' ? 'selected' : ''}>Pasif</option>
+                <option value="active" ${s.status === 'active' ? 'selected' : ''}>Aktif</option>
+            </select>
+        </div>
+        
+        <button class="btn btn-primary" onclick="saveSentosSettings()">
+            <i data-feather="save" style="width:18px; margin-right:8px;"></i> Ayarları Kaydet
+        </button>
+
+        <div id="sentos_log" style="margin-top:24px; display:none;">
+            <div class="section-title mb-2">İŞLEM GÜNLÜĞÜ</div>
+            <div style="background:#000; border-radius:12px; padding:16px; font-family:monospace; font-size:0.75rem; color:#0f0; max-height:150px; overflow-y:auto;">
+                <div id="log_content"></div>
+            </div>
+        </div>
+    `;
+}
+
+function saveSentosSettings() {
+    const key = document.getElementById('sentos_key').value;
+    const secret = document.getElementById('sentos_secret').value;
+    const status = document.getElementById('sentos_status').value;
+    
+    SentosService.saveSettings(key, secret, status);
+    showToast('Sentos ayarları başarıyla kaydedildi!');
+    loadPage('sentos');
+    feather.replace();
+}
+
+async function syncSentos(type) {
+    const log = document.getElementById('sentos_log');
+    const content = document.getElementById('log_content');
+    log.style.display = 'block';
+    
+    if (type === 'products') {
+        content.innerHTML += `<div>[${new Date().toLocaleTimeString()}] Stok senkronizasyonu başlatıldı...</div>`;
+        const res = await SentosService.syncProducts();
+        content.innerHTML += `<div>[${new Date().toLocaleTimeString()}] Başarılı: ${res.count} ürün Sentos'a aktarıldı.</div>`;
+    } else {
+        content.innerHTML += `<div>[${new Date().toLocaleTimeString()}] Siparişler kontrol ediliyor...</div>`;
+        const res = await SentosService.fetchOrders();
+        res.orders.forEach(o => {
+            content.innerHTML += `<div>[${new Date().toLocaleTimeString()}] YENİ: ${o.id} (${o.platform}) - ${formatCurrency(o.total)}</div>`;
+        });
+        content.innerHTML += `<div>[${new Date().toLocaleTimeString()}] Toplam ${res.orders.length} yeni sipariş alındı.</div>`;
+    }
+    content.scrollTop = content.scrollHeight;
+    showToast('Senkronizasyon tamamlandı!');
 }
 
 // 4. SATIŞ YÖNETİMİ
