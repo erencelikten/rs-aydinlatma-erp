@@ -1,120 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=SF+Pro+Display:wght@400;500;600;700;800&display=swap');
+
+@keyframes toastIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ==========================================================================
+   RS AYDINLATMA ERP - PREMIUM FINTECH DARK THEME
+   100% Mobile First, Strict Overflow Prevention, Glassmorphism
+========================================================================== */
 
 :root {
-    /* Primary Palette (Champagne) */
-    --primary: #C5A059;
-    --primary-light: #D4AF37;
-    --primary-lighter: #F3E5AB;
-    --primary-dark: #A67C00;
+    /* --- COLOR SYSTEM --- */
+    /* Absolute Dark Backgrounds */
+    --bg-base: #060608;          /* En alt kemik siyah */
+    --bg-surface: #101015;       /* Kartların ve modüllerin alt rengi */
+    --bg-surface-elevated: #16161C; /* Biraz daha yukarıda duran detaylar */
+    --bg-glass: rgba(22, 22, 30, 0.6); /* Camsı yüzeyler */
+    --bg-glass-heavy: rgba(14, 14, 18, 0.85); /* Bottom Nav gibi yoğun blurlu arka planlar */
 
-    /* Accent Colors */
-    --accent: #C5A059;
-    --accent-light: #D4AF37;
-    --accent-dark: #8C6A00;
-    --accent-glow: rgba(197, 160, 89, 0.3);
+    /* Typography (Crisp Light on Dark) */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.65);
+    --text-tertiary: rgba(255, 255, 255, 0.45);
+    
+    /* Neon Status Colors */
+    /* Pozitif, Gelir, Başarı - Neon Tok Yeşil */
+    --green-neon: #32D74B; 
+    --green-glow: rgba(50, 215, 75, 0.25);
+    --green-bg: rgba(50, 215, 75, 0.1);
 
-    /* Status Colors */
-    --success: #00C853;
-    --success-bg: rgba(0, 200, 83, 0.1);
-    --warning: #FFB300;
-    --warning-bg: rgba(255, 179, 0, 0.1);
-    --danger: #FF4757;
-    --danger-bg: rgba(255, 71, 87, 0.1);
-    --info: #2196F3;
-    --info-bg: rgba(33, 150, 243, 0.1);
+    /* Negatif, Gider, Hata - Keskin Neon Kırmızı/Pembe */
+    --red-neon: #FF453A;
+    --red-glow: rgba(255, 69, 58, 0.25);
+    --red-bg: rgba(255, 69, 58, 0.1);
 
-    /* Neutrals (Bright & Clean) */
-    --bg-body: #F8F9FA;
-    --bg-sidebar: rgba(255, 255, 255, 0.85);
-    --bg-card: rgba(255, 255, 255, 1);
-    --bg-card-hover: rgba(250, 250, 250, 1);
-    --bg-input: rgba(240, 240, 240, 0.8);
-    --bg-table-header: rgba(245, 245, 245, 1);
-    --bg-table-row-alt: rgba(250, 250, 250, 1);
-    --bg-modal: rgba(255, 255, 255, 1);
+    /* Uyarı, Beklemede - Turuncu/Sarı */
+    --orange-neon: #FF9F0A;
+    
+    /* Bilgi - Neon Mavi */
+    --blue-neon: #0A84FF;
 
-    --border: rgba(0, 0, 0, 0.08);
-    --border-light: rgba(0, 0, 0, 0.04);
-    --border-focus: var(--accent);
+    /* Gradients (Vibrant, Premium) */
+    /* Ana Ciro Kartı Gradyanı (Red-Orange to Pink) */
+    --grad-hero: linear-gradient(135deg, #FF512F 0%, #F09819 50%, #FF0076 100%);
+    --grad-fab: linear-gradient(135deg, #FF6B6B 0%, #FF0076 100%);
+    
+    /* Borders & Dividers */
+    --border-light: rgba(255, 255, 255, 0.05); /* Çok gizli çizgiler */
+    --border-strong: rgba(255, 255, 255, 0.12);
+    
+    /* Shadows */
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.6);
+    --shadow-hero: 0 20px 40px rgba(255, 81, 47, 0.25), 0 0 80px rgba(255, 0, 118, 0.15); /* Ciro kartının altında devasa glow */
 
-    /* Text Colors (Dark on White) */
-    --text-primary: #1A1A1A;
-    --text-secondary: #4A4A4A;
-    --text-muted: #8E8E8E;
-    --text-main: #000000;
-
-    /* Glass Effect (Light) */
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(0, 0, 0, 0.05);
-    --glass-blur: blur(24px);
-
-    /* Shadows (Light Theme) */
-    --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.03);
-    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 15px 50px rgba(0, 0, 0, 0.08);
-    --shadow-glow: 0 0 30px var(--accent-glow);
-
-    /* Spacing */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
+    /* Spacing & Layout */
+    --radius-sm: 12px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 32px; /* Devasa yuvarlatmalar (Fintech tarzı) */
+    
+    --bottom-nav-height: 84px; /* Touch area geniş tutuldu */
+    --safe-area-bottom: env(safe-area-inset-bottom, 20px);
 }
 
-/* Dark Mode Variables */
-[data-theme="dark"] {
-    --bg-body: #0A0A0B;
-    --bg-sidebar: rgba(18, 18, 20, 0.9);
-    --bg-card: #141417;
-    --bg-card-hover: #1C1C21;
-    --bg-input: #1C1C21;
-    --bg-table-header: #1C1C21;
-    --bg-table-row-alt: #16161A;
-    --bg-modal: #141417;
-
-    --border: rgba(255, 255, 255, 0.08);
-    --border-light: rgba(255, 255, 255, 0.04);
-
-    --text-primary: #E1E1E6;
-    --text-secondary: #A9A9B2;
-    --text-muted: #71717A;
-    --text-main: #FFFFFF;
-
-    --glass-bg: rgba(20, 20, 23, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.05);
-
-    --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 15px 50px rgba(0, 0, 0, 0.4);
-}
-
+/* ==========================================================================
+   1. RESET & LOCKDOWN (KEMİK GİBİ MOBİL YAPI)
+========================================================================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Mobil tıklama grisini kaldır */
+    /* Font ailesi: Mac/iOS'te native görünüm için -apple-system (SF Pro) 1. sırada, Android ve Web için Inter */
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
 }
 
-html {
-    scroll-behavior: smooth;
-    font-size: 16px;
-    height: 100vh;
-    overflow: hidden;
-    position: fixed;
+html, body {
     width: 100%;
-}
-
-body {
-    background: var(--bg-body);
+    height: 100%;
+    background-color: var(--bg-base);
     color: var(--text-primary);
-    line-height: 1.6;
-    height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden !important; /* YATAY KAYMA KESİNLİKLE YASAK */
+    overscroll-behavior: none; /* Rubber banding efektini (sayfayı yukarı aşağı çekerken beyaz çıkması) engelle */
     -webkit-font-smoothing: antialiased;
-    overscroll-behavior: none;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Background Grid Pattern & Image */
+/* Arka planda premium granürlü (noise) efekt ve hafif glow */
 body::before {
     content: '';
     position: fixed;
@@ -122,1372 +96,433 @@ body::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    /* Use the cinematic background or gradient if image not found */
-    background: radial-gradient(circle at top right, rgba(197, 160, 89, 0.05) 0%, var(--bg-body) 100%);
-    z-index: -1;
+    /* Hafif dumanlı bir glow */
+    background: radial-gradient(circle at 50% -20%, rgba(255, 81, 47, 0.08) 0%, transparent 60%),
+                var(--bg-base);
+    z-index: -10;
     pointer-events: none;
-    transition: background 0.3s ease;
 }
 
-[data-theme="dark"] body::before {
-    background: radial-gradient(circle at top right, rgba(197, 160, 89, 0.08) 0%, #000000 100%);
-}
-
-/* Scrollbar styling for a premium feel */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-body);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary-light);
-    border-radius: 9px;
-}
-
-/* Layout Structure */
-.app-container {
-    display: flex;
-    min-height: 100vh;
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* SIDEBAR START */
-.sidebar {
-    width: 280px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border-right: 1px solid var(--glass-border);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    z-index: 100;
-}
-
-.sidebar-header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--glass-border);
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.logo-container {
-    background: transparent;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-img {
-    max-height: 80px;
-    /* Maksimum okunabilirlik için devasa yapıldı */
-    width: 100%;
-    max-width: 220px;
-    object-fit: contain;
-    display: block;
-}
-
-/* Optional text next to logo if needed, otherwise just image */
-.logo-text {
-    font-size: 1.1rem;
+/* ==========================================================================
+   2. TYPOGRAPHY
+========================================================================== */
+h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text-main);
-}
-
-.sidebar-nav {
-    flex: 1;
-    padding: 16px 12px;
-    overflow-y: auto;
-}
-
-.nav-section {
-    margin-bottom: 12px;
-}
-
-.nav-section-title {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    padding-left: 12px;
-    opacity: 0.6;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    /* Daha kompakt */
-    color: var(--text-muted);
-    text-decoration: none;
-    border-radius: 6px;
-    /* Daha keskin köşeler */
-    margin-bottom: 4px;
-    transition: all 0.15s ease;
-    font-weight: 500;
-    font-size: 0.85rem;
-    /* Daha küçük font */
-    border: 1px solid transparent;
-}
-
-.nav-item:hover {
-    background: var(--bg-hover);
-    color: var(--text-main);
-    border-color: rgba(255, 255, 255, 0.05);
-}
-
-.nav-item.active {
-    background: linear-gradient(90deg, rgba(71, 156, 255, 0.1), transparent);
-    /* Transparent Blue BG */
-    color: var(--primary);
-    border: 1px solid rgba(71, 156, 255, 0.2);
-    box-shadow: none;
-    /* Glow kaldırıldı, daha mat ve teknik */
-    border-left: 3px solid var(--primary);
-    /* Sol çizgi vurgusu */
-}
-
-.nav-item.active::before {
-    display: none;
-}
-
-/* Eski vurguyu kaldır */
-
-/* SVG Icon Styling */
-.nav-item-icon {
-    width: 18px;
-    /* İkonlar da küçüldü */
-    height: 18px;
-    stroke: currentColor;
-    stroke-width: 2;
-    fill: none;
-    flex-shrink: 0;
-    opacity: 0.8;
-}
-
-.nav-item.active .nav-item-icon {
-    opacity: 1;
-    stroke-width: 2.5;
-}
-
-/* SIDEBAR END */
-
-/* MAIN CONTENT START */
-.main-content {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-    transition: margin-left var(--transition-normal);
-}
-
-.topbar {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border-bottom: 1px solid var(--glass-border);
-    padding: 0 32px;
-    height: 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    flex-shrink: 0;
-}
-
-.page-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: -0.02em;
-}
-
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-.search-box {
-    position: relative;
-    width: 320px;
-}
-
-.search-input {
-    width: 100%;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    padding: 10px 16px 10px 40px;
-    border-radius: var(--radius-md);
+    letter-spacing: -0.02em; /* Daha sıkı, modern duruş */
     color: var(--text-primary);
-    font-size: 13px;
-    outline: none;
-    transition: all var(--transition-fast);
 }
 
-.search-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-    background: var(--bg-card);
+/* Devasa Ciro Rakamı İçin Özel Sınıf */
+.hero-amount {
+    font-size: 3.2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    color: #FFFFFF;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
-.search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    display: flex;
+/* Ana başlıklar (Bilanço vb.) */
+.section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding-left: 4px;
 }
 
-.icon-button {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    padding: 0;
+/* Küçük açıklamalar */
+.text-caption {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
 }
 
-.icon-button:hover {
-    background: var(--bg-hover);
-    color: var(--text-main);
-    border-color: var(--text-muted);
-    transform: translateY(-2px);
-}
+.text-green { color: var(--green-neon) !important; }
+.text-red { color: var(--red-neon) !important; }
 
-.notification-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: var(--danger);
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 99px;
-    border: 2px solid var(--bg-card);
-}
-
-.user-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--bg-hover), var(--bg-card));
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: var(--text-main);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.user-avatar:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-/* CONTENT AREA */
-.content {
-    padding: 24px 32px;
-    flex: 1;
+/* ==========================================================================
+   3. LAYOUT & CONTAINERS
+========================================================================== */
+.app-wrapper {
     width: 100%;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-}
-
-/* CARDS Styling */
-.card {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    border-color: rgba(0, 212, 170, 0.3);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-}
-
-.card-header h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-/* Grid Layouts - Optimized for preventing overflow */
-.grid {
-    display: grid;
-    gap: 24px;
-    width: 100%;
-}
-
-.grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.grid-3 {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-/* Change grid-4 to auto-fit for better responsiveness or keep fixed but handle overflow */
-.grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-}
-
-/* STAT CARDS */
-.stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    /* Reduced padding slightly */
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease-out;
+    max-width: 600px; /* Tablette bile mobil görünümü koru, ortala */
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 0 16px; /* Yanlardan nefes alma payı */
+    padding-top: env(safe-area-inset-top, 24px); /* Çentik payı */
+    padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 24px); /* Bottom nav arkasında kalmasın */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 24px;
 }
 
-/* Accent line on top with Gradient */
-.stat-card::before {
+/* ==========================================================================
+   4. PREMIUM UI COMPONENTS
+========================================================================== */
+
+/* --- HERO CARD (Ciro Kartı) --- */
+.hero-card {
+    background: var(--grad-hero);
+    border-radius: var(--radius-xl);
+    padding: 32px 24px;
+    box-shadow: var(--shadow-hero);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+/* İçinde hafif bir parlama (glass efekti) */
+.hero-card::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    opacity: 0.8;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
 }
 
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    border-color: var(--border-light);
-}
-
-.stat-value {
-    font-size: 1.75rem;
-    /* Reduced from 2.5rem to prevent overflow */
-    font-weight: 700;
-    margin-bottom: 8px;
-    line-height: 1.2;
-    color: var(--text-main);
-    word-wrap: break-word;
-    /* Allow wrapping if absolutely necessary */
-    white-space: nowrap;
-    /* Prefer single line */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    /* Add ellipsis if still too long */
-}
-
-.stat-label {
-    color: var(--text-muted);
+.hero-label {
     font-size: 0.8rem;
-    /* Slightly smaller */
     font-weight: 600;
-    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
     letter-spacing: 0.05em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* UTILITIES */
-.flex-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.mb-2 {
-    margin-bottom: 24px;
-}
-
-.mt-2 {
-    margin-top: 24px;
-}
-
-.flex-col {
-    display: flex;
-    flex-direction: column;
-}
-
-.gap-1 {
-    gap: 12px;
-}
-
-/* TABLES - Dark & Clean */
-.table-container {
-    overflow-x: auto;
-    width: 100%;
-    margin-top: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 8px;
-}
-
-thead th {
-    text-align: left;
-    padding: 12px 24px;
-    color: var(--text-muted);
-    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
 }
 
-tbody tr {
-    background: var(--glass-bg);
-    transition: all var(--transition-normal);
-}
-
-tbody tr:hover {
-    transform: translateX(4px);
-    background: var(--bg-card-hover);
-    box-shadow: var(--shadow-md);
-}
-
-td {
-    padding: 20px 24px;
-    /* Reduced padding */
-    border: none;
-    font-weight: 500;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    white-space: nowrap;
-    /* Prevent wrapping in cells */
-}
-
-td:first-child {
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-}
-
-td:last-child {
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-
-/* BADGES */
-.badge {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: inline-block;
-}
-
-.badge-success {
-    background: transparent;
-    color: var(--success);
-    border: 1px solid var(--success);
-}
-
-.badge-warning {
-    background: transparent;
-    color: var(--warning);
-    border: 1px solid var(--warning);
-}
-
-.badge-danger {
-    background: transparent;
-    color: var(--danger);
-    border: 1px solid var(--danger);
-}
-
-.badge-info {
-    background: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-}
-
-/* BUTTONS */
-.btn {
-    padding: 12px 24px;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 14px;
-    transition: all var(--transition-normal);
-    line-height: 1;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-sm {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-    color: var(--primary-dark);
-    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.2);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
-}
-
-.btn-secondary {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    color: var(--text-primary);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.btn-success {
-    background: var(--success);
-    color: black;
-}
-
-.btn-warning {
-    background: var(--warning);
-    color: black;
-}
-
-.btn-danger {
-    background: var(--danger);
-    color: white;
-}
-
-/* MODALS */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(5, 10, 20, 0.85);
-    /* Deep dark background */
-    backdrop-filter: blur(8px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity var(--transition-normal);
-}
-
-.modal-overlay.active {
-    display: flex;
-    opacity: 1;
-}
-
-.modal {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    width: 600px;
-    max-width: 90%;
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-lg);
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(20px);
-    transition: transform var(--transition-normal);
-}
-
-.modal-overlay.active .modal {
-    transform: translateY(0);
-}
-
-.modal-header {
-    padding: 32px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 4px;
-    display: flex;
-}
-
-.modal-close:hover {
-    background: var(--bg-hover);
-    color: white;
-}
-
-.modal-body {
-    padding: 32px;
-}
-
-.modal-footer {
-    padding: 32px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: flex-end;
+/* --- GRID CARDS (Özet Metrikler) --- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
 }
 
-/* FORMS */
-.form-group {
-    margin-bottom: 24px;
+.metric-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    position: relative;
 }
 
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 13px;
+/* Kartlardaki ikonlar için özel dairesel zemin */
+.metric-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.03); /* Camsı gri */
     color: var(--text-secondary);
 }
 
-.form-input,
-.form-select,
-.form-textarea {
-    width: 100%;
-    padding: 12px 16px;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+.metric-value {
+    font-size: 1.4rem;
+    font-weight: 700;
     color: var(--text-primary);
-    font-size: 14px;
-    transition: all var(--transition-fast);
-    outline: none;
+    letter-spacing: -0.02em;
 }
 
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-    background: var(--bg-card);
+.metric-title {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
-/* REQUIRED ASTERISK */
-.required {
-    color: var(--danger);
-    margin-left: 4px;
+/* Kartın sağ üstündeki ok > */
+.metric-card .nav-arrow {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: var(--text-tertiary);
+    width: 16px;
+    height: 16px;
 }
 
-/* Responsive */
-@media (max-width: 1400px) {
-    .grid-4 {
-        grid-template-columns: repeat(2, 1fr);
-    }
+/* --- LIST ITEMS (Son İşlemler) --- */
+.transaction-list {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
 }
 
-@media (max-width: 1024px) {
-    .sidebar {
-        transform: translateX(-100%);
-    }
-
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-    .grid-3 {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.transaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
 }
 
-@media (max-width: 768px) {
-
-    .grid-2,
-    .grid-3,
-    .grid-4 {
-        grid-template-columns: 1fr;
-    }
-
-    .topbar {
-        padding: 0 20px;
-    }
-
-    .content {
-        padding: 20px;
-    }
-
-    .stat-value {
-        font-size: 1.25rem;
-    }
+.transaction-item:last-child {
+    border-bottom: none;
 }
 
-/* ========================================
-   AUTHENTICATION (LOGIN) SCREEN
-   ======================================== */
-.auth-overlay {
+.tx-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.tx-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* İkon renk varyasyonları */
+.tx-icon.income { background: var(--green-bg); color: var(--green-neon); }
+.tx-icon.expense { background: var(--red-bg); color: var(--red-neon); }
+
+.tx-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tx-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tx-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.tx-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tx-amount {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   5. BOTTOM NAVIGATION BAR
+========================================================================== */
+.bottom-nav {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: radial-gradient(circle at center, rgba(10, 38, 71, 0.7) 0%, rgba(5, 10, 20, 0.95) 100%);
-    backdrop-filter: blur(20px);
-    z-index: 9999;
+    right: 0;
+    height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+    background: var(--bg-glass-heavy);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-top: 1px solid var(--border-strong);
+    display: flex;
+    align-items: flex-start; /* İçerik yukarı hizalı, aşağısı safe-area */
+    justify-content: space-around;
+    padding: 0 12px;
+    padding-top: 12px;
+    z-index: 1000;
+}
+
+/* Modali (More Drawer vb.) da dahil edeceğimiz z-index mimarisi */
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    width: 60px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+    transition: all 0.2s ease;
+}
+
+/* Active State - Beyaz & Daha Belirgin */
+.nav-btn.active {
+    color: var(--text-primary);
+}
+.nav-btn.active svg {
+    stroke-width: 2.5;
+    fill: rgba(255,255,255,0.1);
+}
+
+/* --- FAB (Center Action Button) --- */
+.fab-wrapper {
+    position: relative;
+    top: -24px; /* Bara bindirme */
     display: flex;
     justify-content: center;
+}
+
+.nav-fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--grad-fab);
+    border: none;
+    color: white;
+    box-shadow: 0 8px 24px rgba(255, 0, 118, 0.4);
+    display: flex;
     align-items: center;
-    transition: opacity var(--transition-slow);
+    justify-content: center;
+    cursor: pointer;
 }
 
-.auth-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
+.nav-fab svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.5;
 }
 
-.auth-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: var(--glass-blur);
-    padding: 60px 40px;
-    border-radius: var(--radius-xl);
-    width: 100%;
-    max-width: 440px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-    transform: translateY(0);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.auth-overlay.hidden .auth-card {
-    transform: translateY(30px);
-}
-
-.auth-logo-container {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.auth-logo-container img {
-    height: 160px;
-    max-width: 100%;
-    object-fit: contain;
-    margin-bottom: 24px;
-}
-
-.auth-logo-container h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text-main);
-    margin-bottom: 8px;
-}
-
-.auth-logo-container p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-.auth-error {
-    background: rgba(255, 71, 87, 0.1);
-    color: var(--danger);
-    padding: 12px;
-    border-radius: var(--radius-md);
-    margin-bottom: 20px;
-    font-size: 0.85rem;
-    text-align: center;
-    border: 1px solid rgba(255, 71, 87, 0.3);
-    display: none;
-}
-
-.auth-error.active {
-    display: block;
-}
-
-/* Base styles for cockpit and feeding */
-.grid-cockpit {
-    display: grid;
-    grid-template-columns: 220px 1fr 420px;
-    /* Sağ sütun (Canlı Akış) iyice genişletildi */
-    gap: 24px;
-    width: 100%;
-    min-height: 500px;
-}
-
-@media (max-width: 1400px) {
-    .grid-cockpit {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 1024px) {
-    .grid-cockpit {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Stat Box Small (for dashboard metrics) */
-.stat-box-sm {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-md);
-    padding: 16px 20px;
+/* ==========================================================================
+   6. HEADER (TOP BAR)
+========================================================================== */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    transition: transform var(--transition-fast);
+    padding-bottom: 8px;
 }
 
-.stat-box-sm:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
-.stat-box-sm .label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-}
-
-.stat-box-sm .value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.stat-box-sm .trend {
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-/* Feed Items (Live System Feed) */
-.feed-item {
+.user-profile {
     display: flex;
-    gap: 16px;
-    padding: 16px;
-    border-bottom: 1px solid var(--border-light);
-    transition: background 0.2s;
-}
-
-.feed-item:hover {
-    background: var(--bg-hover);
-}
-
-.feed-time {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    min-width: 45px;
-    font-weight: 600;
-}
-
-.feed-content {
-    flex: 1;
-}
-
-.feed-content .bold {
-    font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 4px;
-}
-
-/* Status Dot */
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.status-dot.ok {
-    background: var(--success);
-    box-shadow: 0 0 8px var(--success);
-}
-
-.status-dot.warning {
-    background: var(--warning);
-    box-shadow: 0 0 8px var(--warning);
-}
-
-.status-dot.error {
-    background: var(--danger);
-    box-shadow: 0 0 8px var(--danger);
-}
-
-/* Utility Classes */
-.text-success {
-    color: var(--success) !important;
-}
-
-.text-danger {
-    color: var(--danger) !important;
-}
-
-.text-warning {
-    color: var(--warning) !important;
-}
-
-.text-primary {
-    color: var(--primary) !important;
-}
-
-.text-muted {
-    color: var(--text-muted) !important;
-}
-
-.bold {
-    font-weight: 700;
-}
-
-.w-100 {
-    width: 100%;
-}
-
-.p-0 {
-    padding: 0;
-}
-
-.p-1 {
-    padding: 8px;
-}
-
-.p-2 {
-    padding: 16px;
-}
-
-.mb-1 {
-    margin-bottom: 8px;
-}
-
-.mt-1 {
-    margin-top: 8px;
-}
-
-.fs-3 {
-    font-size: 1.5rem;
-}
-
-.rounded {
-    border-radius: var(--radius-md);
-}
-
-.flex {
-    display: flex;
-}
-
-.items-center {
     align-items: center;
+    gap: 12px;
 }
 
-.justify-end {
-    justify-content: flex-end;
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--border-strong); /* Image fallback */
+    border: 1px solid rgba(255,255,255,0.1);
+    object-fit: cover;
 }
 
-.gap-1 {
-    gap: 8px;
-}
-
-.gap-2 {
-    gap: 16px;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.text-center {
-    text-align: center;
-}
-
-/* ========================================
-   MOBILE RESPONSIVE ENHANCEMENTS
-   ======================================== */
-
-/* Mobile Menu Toggle Button */
-.mobile-menu-toggle {
-    display: none;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    color: var(--text-main);
-    padding: 10px 14px;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-size: 1.25rem;
-    z-index: 200;
-}
-
-@media (max-width: 1024px) {
-    .mobile-menu-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .topbar-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    /* Sidebar overlay for mobile */
-    .sidebar {
-        position: fixed;
-        z-index: 1000;
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-    /* Overlay backdrop */
-    .sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 999;
-    }
-
-    .sidebar-overlay.active {
-        display: block;
-    }
-}
-
-@media (max-width: 768px) {
-
-    /* Topbar mobile adjustments */
-    .topbar {
-        padding: 12px 16px;
-        flex-wrap: wrap;
-        gap: 12px;
-        height: auto;
-    }
-
-    .topbar-right {
-        gap: 12px;
-        order: 2;
-        flex: 1;
-        justify-content: flex-end;
-    }
-
-    .search-box {
-        display: none;
-    }
-
-    .page-title {
-        font-size: 1.25rem;
-    }
-
-    /* Content padding */
-    .content {
-        padding: 16px;
-    }
-
-    /* Cards */
-    .card {
-        padding: 20px;
-        margin-bottom: 16px;
-    }
-
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding-bottom: 16px;
-        margin-bottom: 16px;
-    }
-
-    .card-header .btn {
-        width: 100%;
-    }
-
-    /* Stat cards */
-    .stat-card {
-        padding: 16px;
-    }
-
-    .stat-value {
-        font-size: 1.25rem;
-    }
-
-    .stat-label {
-        font-size: 0.7rem;
-    }
-
-    /* Buttons */
-    .btn {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-    }
-
-    .btn-sm {
-        padding: 8px 12px;
-        font-size: 0.75rem;
-    }
-
-    /* Flex buttons stack on mobile */
-    .flex-between {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-    }
-}
-
-.flex-between>.btn,
-.flex-between>.flex {
-    width: 100%;
-}
-
-.flex.gap-1 {
+.greeting {
+    display: flex;
     flex-direction: column;
 }
 
-.flex.gap-1>.btn {
-    width: 100%;
+.greeting-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
 }
 
-/* Tables - horizontal scroll with better touch */
-.table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -16px;
-    padding: 0 16px;
-}
-
-table {
-    min-width: 600px;
-}
-
-td,
-th {
-    padding: 12px 16px;
-    font-size: 0.85rem;
-}
-
-/* Modal responsive */
-.modal {
-    width: 95%;
-    max-height: 85vh;
-    margin: 20px auto;
-}
-
-.modal-header,
-.modal-body,
-.modal-footer {
-    padding: 20px;
-}
-
-.modal-body .grid-2 {
-    grid-template-columns: 1fr;
-}
-
-/* Form inputs */
-.form-input,
-.form-select,
-.form-textarea {
-    padding: 12px 16px;
-    font-size: 16px;
-    /* Prevents zoom on iOS */
-}
-
-/* Grid cockpit mobile */
-.grid-cockpit {
-    gap: 16px;
-}
-
-/* Stat box small */
-.stat-box-sm {
-    padding: 12px 16px;
-}
-
-.stat-box-sm .value {
+.greeting-name {
     font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
-/* Icon buttons */
-.icon-button {
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.icon-btn {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    cursor: pointer;
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 0.85rem;
+.icon-btn svg { width: 20px; height: 20px; stroke-width: 2;}
+
+/* ==========================================================================
+   8. FORMS, BUTTONS & INPUTS (DARK FINTECH)
+========================================================================== */
+.form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+.form-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding-left: 4px; }
+.form-input, .form-select {
+    width: 100%; padding: 16px 20px; border-radius: var(--radius-sm);
+    background: var(--bg-surface-elevated); border: 1px solid var(--border-strong);
+    color: var(--text-primary); font-size: 0.95rem; font-weight: 500;
+    transition: all 0.2s ease;
 }
-
-@media (max-width: 480px) {
-
-    /* Very small screens */
-    .page-title {
-        font-size: 1.1rem;
-    }
-
-    .stat-value {
-        font-size: 1.1rem;
-    }
-
-    .grid {
-        gap: 12px;
-    }
-
-    /* Hide less important elements */
-    .icon-button:not(:first-child) {
-        display: none;
-    }
-
-    td:last-child .btn {
-        padding: 6px 10px;
-        font-size: 0.7rem;
-    }
+.form-input:focus, .form-select:focus {
+    border-color: var(--blue-neon); outline: none; 
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15);
+    background: var(--bg-glass);
 }
+.form-input::placeholder { color: var(--text-tertiary); }
 
-/* =========================================
-   PRINT / PDF EXPORT STYLES (A4 LETTERHEAD)
-   ========================================= */
-@media print {
-    body {
-        margin: 0;
-        padding: 0;
-        background: white !important;
-        color: black !important;
-        font-family: 'Inter', sans-serif;
-    }
-
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: var(--bg-body);
-        z-index: -10;
-        display: none !important;
-    }
-
-    .sidebar,
-    .topbar,
-    .modal-footer,
-    .btn:not(.btn-print-only) {
-        display: none !important;
-    }
-
-    .main-content {
-        margin: 0 !important;
-        padding: 2cm !important;
-        /* Standard A4 padding */
-        width: 21cm;
-        height: 29.7cm;
-    }
-
-    /* Biyosera Letterhead Simulation */
-    .main-content::before {
-        content: url('assets/logo-biyosera.png');
-        /* Assumes logo exists */
-        display: block;
-        width: 200px;
-        margin-bottom: 30px;
-        filter: invert(1);
-        /* Ensure visibility if original logo is white */
-    }
-
-    .card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    table {
-        border-collapse: collapse !important;
-        width: 100% !important;
-        border: 1px solid #ddd;
-    }
-
-    th,
-    td {
-        border: 1px solid #ddd !important;
-        padding: 10px !important;
-        color: black !important;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f5f5f5 !important;
-    }
-
-    .badge {
-        border: 1px solid #333 !important;
-        color: black !important;
-        background: transparent !important;
-    }
-
-    .stat-card {
-        border: 1px solid #ccc !important;
-        background: transparent !important;
-        page-break-inside: avoid;
-    }
-
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
+.btn {
+    width: 100%; padding: 16px 24px; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem;
+    cursor: pointer; transition: all 0.2s; border: none; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
 }
+.btn-primary { background: var(--blue-neon); color: #fff; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.3); }
+.btn-success { background: var(--green-neon); color: #000; box-shadow: 0 4px 15px rgba(50, 215, 75, 0.3); }
+.btn-danger { background: var(--red-neon); color: #fff; box-shadow: 0 4px 15px rgba(255, 69, 58, 0.3); }
+.btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-primary); }
+
+/* ==========================================================================
+   9. MOBILE LISTS & BADGES (FOR MODULES)
+========================================================================== */
+.badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; }
+.badge-warning { background: rgba(255, 159, 10, 0.15); color: var(--orange-neon); }
+.badge-success { background: var(--green-bg); color: var(--green-neon); }
+.badge-danger { background: var(--red-bg); color: var(--red-neon); }
+.badge-info { background: rgba(10, 132, 255, 0.1); color: var(--blue-neon); }
+
+.page-title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 24px; color: #fff; }
+
+.module-group { margin-bottom: 32px; }
+.module-list { display: flex; flex-direction: column; gap: 12px; }
+.module-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px; background: var(--bg-surface); border-radius: var(--radius-md);
+    border: 1px solid var(--border-light); cursor: pointer;
+    transition: background 0.2s;
+}
+.module-item:active { background: var(--bg-hover); }
+.module-left { display: flex; align-items: center; gap: 16px; }
+.module-icon { 
+    width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: center; color: var(--text-secondary);
+}
+.module-info { display: flex; flex-direction: column; gap: 4px; }
+.module-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+.module-desc { font-size: 0.75rem; color: var(--text-tertiary); }
+.module-arrow { color: var(--text-tertiary); width: 20px; height: 20px;}
+
+/* ==========================================================================
+   7. UTILITIES
+========================================================================== */
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.mb-4 { margin-bottom: 32px; }
+.mt-2 { margin-top: 16px; }
+
+/* Hide Desktop specific things */
+.desktop-only { display: none !important; }

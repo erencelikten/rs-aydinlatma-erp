@@ -1,0 +1,4 @@
+total 8
+drwxr-xr-x@  3 eren  staff   96 Mar 17 00:24 .
+drwxr-xr-x@ 15 eren  staff  480 Mar 17 10:49 ..
+-rw-r--r--@  1 eren  staff  428 Mar 17 00:24 supabase-client.js

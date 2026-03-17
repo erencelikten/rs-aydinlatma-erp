@@ -1,431 +1,547 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS Aydınlatma ERP - Kurumsal Yönetim Sistemi</title>
-    <meta name="description" content="RS Aydınlatma için kapsamlı ERP/CRM yönetim sistemi">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>RS Aydınlatma - Giriş</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* ============ LOGIN SCREEN ============ */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-base);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        /* Subtle ambient glow spots */
+        #loginScreen::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        #loginScreen::after {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(10,132,255,0.08) 0%, transparent 70%);
+            bottom: -80px;
+            left: -60px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+            animation: loginFadeIn 0.6s ease both;
+        }
+
+        @keyframes loginFadeIn {
+            from { opacity: 0; transform: translateY(32px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* BRAND TYPOGRAPHY */
+        .login-brand {
+            margin-bottom: 48px;
+            text-align: left;
+        }
+        .login-brand-line {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .login-brand-name {
+            font-size: clamp(2rem, 8vw, 2.8rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            color: #fff;
+        }
+        .login-brand-name span {
+            background: var(--grad-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .login-brand-sub {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* FORM */
+        .login-form { display: flex; flex-direction: column; gap: 16px; }
+
+        .login-input-wrapper {
+            position: relative;
+        }
+        .login-input-wrapper .login-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+        .login-input {
+            width: 100%;
+            padding: 18px 18px 18px 50px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-strong);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+        }
+        .login-input:focus {
+            border-color: rgba(255,107,53,0.7);
+            outline: none;
+            background: var(--bg-surface-elevated);
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.12);
+        }
+        .login-input::placeholder { color: var(--text-tertiary); }
+
+        .pw-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--grad-hero);
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+        .login-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+        }
+
+        /* Error shake */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .shake { animation: shake 0.4s ease; }
+
+        .login-error {
+            font-size: 0.8rem; color: var(--red-neon); font-weight: 600;
+            display: none; padding: 0 4px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 36px;
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+        .login-footer strong { color: var(--text-secondary); }
+
+        /* Loading spinner on button */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none; margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Slide-out login screen */
+        @keyframes slideOutUp {
+            to { transform: translateY(-100%); opacity: 0; }
+        }
+    </style>
 </head>
-
 <body>
-    <!-- AUTHENTICATION (LOGIN) SCREEN -->
-    <div class="auth-overlay" id="authOverlay">
-        <div class="auth-card">
-            <div class="auth-logo-container">
-                <img src="assets/logo.png" alt="RS Aydınlatma ERP" class="auth-logo-img">
-                <h2>Hoş Geldiniz</h2>
-                <p>RS Aydınlatma Kurumsal Yönetim Sistemine Giriş Yapın</p>
+
+    <!-- ============================================
+         GİRİŞ EKRANI
+    ============================================ -->
+    <div id="loginScreen">
+        <div class="login-box">
+            
+            <!-- MARKA YAZISI -->
+            <div class="login-brand">
+                <div class="login-brand-line">Premium Yönetim Sistemi</div>
+                <div class="login-brand-name">RS <span>AYDINLATMA</span></div>
+                <div class="login-brand-sub">İç ve Dış Mekan Aydınlatma Çözümleri</div>
             </div>
 
-            <div class="auth-error" id="authErrorMsg">Hatalı kullanıcı adı veya şifre.</div>
-
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label class="form-label" for="loginUsername">Kullanıcı Adı <span class="required">*</span></label>
-                    <input type="text" id="loginUsername" class="form-input" placeholder="Kullanıcı adınızı girin"
-                        required autocomplete="username">
+            <!-- FORM -->
+            <div class="login-form">
+                <div class="login-input-wrapper">
+                    <i data-feather="user" class="login-icon"></i>
+                    <input id="loginUser" class="login-input" type="text" placeholder="Kullanıcı adı" autocomplete="username" autofocus>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 32px;">
-                    <label class="form-label" for="loginPassword">Şifre <span class="required">*</span></label>
-                    <input type="password" id="loginPassword" class="form-input" placeholder="Şifrenizi girin" required
-                        autocomplete="current-password">
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100" id="loginBtn"
-                    style="padding: 16px; font-size: 16px;">
-                    Sisteme Giriş Yap
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div class="app-container" id="appContainer" style="display: none;">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="logo-container">
-                    <img src="https://rsaydinlatma.com/Data/EditorFiles/logo-2.png" alt="RS Aydınlatma"
-                        class="logo-img">
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <div class="nav-section-title">Ana Menü</div>
-                    <a href="#" class="nav-item active" data-page="dashboard">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Satış & Pazarlama</div>
-                    <a href="#" class="nav-item" data-page="satis">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                            <polyline points="17 6 23 6 23 12"></polyline>
-                        </svg>
-                        <span>Satış Yönetimi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="faturalar">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                        <span>Faturalar</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="musteriler">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span>Müşteriler</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Tedarik & Üretim</div>
-                    <a href="#" class="nav-item" data-page="satin-alma">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <path d="M16 10a4 4 0 0 1-8 0"></path>
-                        </svg>
-                        <span>Satın Alma</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="uretim">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path
-                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                            </path>
-                        </svg>
-                        <span>Üretim</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="stok">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-                            <path
-                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                            </path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                        <span>Stok Yönetimi</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Finans & Muhasebe</div>
-                    <a href="#" class="nav-item" data-page="muhasebe">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                        <span>Muhasebe</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="cek-senet">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
-                            <line x1="2" y1="10" x2="22" y2="10"></line>
-                        </svg>
-                        <span>Çek & Senet Takibi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="gelir-gider">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="20" x2="12" y2="10"></line>
-                            <line x1="18" y1="20" x2="18" y2="4"></line>
-                            <line x1="6" y1="20" x2="6" y2="16"></line>
-                        </svg>
-                        <span>Gelir-Gider</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="finansal">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                        </svg>
-                        <span>Finansal Raporlar</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="masraflar">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                        </svg>
-                        <span>Masraf Yönetimi</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Entegrasyonlar</div>
-                    <a href="#" class="nav-item" data-page="entegrasyonlar">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
-                        </svg>
-                        <span>Banka & E-Ticaret API</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Operasyon</div>
-                    <a href="#" class="nav-item" data-page="projeler">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                        </svg>
-                        <span>Proje Yönetimi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="servis">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-                            </path>
-                        </svg>
-                        <span>Servis Formları</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="imza">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
-                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
-                        </svg>
-                        <span>İmza Sistemi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="personel">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="8.5" cy="7" r="4"></circle>
-                            <line x1="20" y1="8" x2="20" y2="14"></line>
-                            <line x1="23" y1="11" x2="17" y2="11"></line>
-                        </svg>
-                        <span>Personel / İK</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-title">Diğer</div>
-                    <a href="#" class="nav-item" data-page="onay">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>Onay Merkezi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="kullanicilar">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span>Kullanıcı Yönetimi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="ayarlar">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path
-                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                            </path>
-                        </svg>
-                        <span>Ayarlar</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="documents">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                        <span>Belge Oluşturucu</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="sartnameler">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                        <span>Şartnameler</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="mail">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
-                            </path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        <span>Mail İstihbaratı</span>
-                    </a>
-                    <a href="#" class="nav-item" onclick="alert('Çıkış yapılıyor...')">
-                        <svg class="nav-item-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16 17 21 12 16 7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                        <span>Çıkış Yap</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Mobile Sidebar Overlay -->
-        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Topbar -->
-            <header class="topbar">
-                <div class="topbar-left">
-                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
+                <div class="login-input-wrapper">
+                    <i data-feather="lock" class="login-icon"></i>
+                    <input id="loginPass" class="login-input" type="password" placeholder="Şifre" autocomplete="current-password">
+                    <button class="pw-toggle" onclick="togglePassword()" type="button" id="pwToggleBtn">
+                        <i data-feather="eye-off" id="pwToggleIcon" style="width:18px; height:18px;"></i>
                     </button>
-                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
                 </div>
-                <div class="topbar-right">
-                    <div class="search-box">
-                        <span class="search-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                        </span>
-                        <input type="text" class="search-input" placeholder="Ara...">
-                    </div>
-                    <button id="themeToggle" class="icon-button" style="margin-right: 8px;">
-                        <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                        <svg id="themeIconMoon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="20"
-                            height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                    <button class="icon-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="notification-badge">5</span>
-                    </button>
-                    <div class="user-avatar">AY</div>
+
+                <div class="login-error" id="loginError">
+                    ⚠ Kullanıcı adı veya şifre hatalı.
                 </div>
-            </header>
 
-            <!-- Content Area -->
-            <div class="content" id="mainContent">
-                <!-- Dashboard content will be loaded here -->
-            </div>
-        </main>
-    </div>
-
-    <!-- Modals -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Modal Title</h2>
-                <button class="modal-close" onclick="closeModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                <button class="login-btn" onclick="doLogin()" id="loginBtn">
+                    <span id="loginBtnText">Giriş Yap</span>
+                    <div class="spinner" id="loginSpinner"></div>
                 </button>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Modal content -->
-            </div>
-            <div class="modal-footer" id="modalFooter">
-                <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
-                <button class="btn btn-primary">Kaydet</button>
+
+            <div class="login-footer">
+                <strong>RS Aydınlatma</strong> &mdash; Tüm hakları saklıdır &copy; 2026
             </div>
         </div>
     </div>
 
-    <!-- Supabase JS Library -->
+
+    <!-- ============================================
+         BİLDİRİM OVERLAY
+    ============================================ -->
+    <div id="notifOverlay" onclick="closeNotifications()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter:blur(4px);"></div>
+    <div id="notifPanel" style="display:none; position:fixed; top:0; right:0; width:min(360px,100vw); height:100vh; background:var(--bg-surface); border-left:1px solid var(--border-light); z-index:1001; overflow-y:auto; transform:translateX(100%); transition:transform 0.3s ease;">
+        <div style="padding:60px 20px 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h2 style="font-size:1.2rem; font-weight:800; color:#fff;">Bildirimler</h2>
+                <button onclick="closeNotifications()" style="background:var(--bg-surface-elevated); border:none; color:var(--text-secondary); width:32px; height:32px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                    <i data-feather="x" style="width:18px; height:18px;"></i>
+                </button>
+            </div>
+            <div id="notifList"></div>
+        </div>
+    </div>
+
+    <!-- FAB ACTION SHEET -->
+    <div id="fabOverlay" onclick="closeFab()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:900; backdrop-filter:blur(4px);"></div>
+    <div id="fabSheet" style="display:none; position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:min(600px,100vw); background:var(--bg-surface); border-radius:32px 32px 0 0; border:1px solid var(--border-light); z-index:901; padding:24px 20px 110px;">
+        <div style="width:40px; height:4px; background:var(--border-strong); border-radius:100px; margin:0 auto 24px;"></div>
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-tertiary); letter-spacing:0.08em; margin-bottom:16px;">HIZLI İŞLEM</div>
+        <div id="fabActions" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+
+    <!-- EXPORT OVERLAY -->
+    <div id="exportOverlay" onclick="closeExport()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter:blur(4px);"></div>
+    <div id="exportPanel" style="display:none; position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:min(600px,100vw); background:var(--bg-surface); border-radius:32px 32px 0 0; border:1px solid var(--border-light); z-index:1001; padding:24px 20px 48px;">
+        <div style="width:40px; height:4px; background:var(--border-strong); border-radius:100px; margin:0 auto 24px;"></div>
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-tertiary); letter-spacing:0.08em; margin-bottom:16px;">DIŞA AKTAR</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <button onclick="exportCSV('sales')" class="btn btn-outline" style="justify-content:flex-start; gap:16px; padding:16px 20px;">
+                <i data-feather="file-text" style="width:20px; color:var(--green-neon);"></i>
+                <div style="text-align:left;">
+                    <div style="font-weight:700; color:#fff;">Satışlar (CSV)</div>
+                    <div style="font-size:0.75rem; color:var(--text-tertiary);">Tüm satış siparişlerini indir</div>
+                </div>
+            </button>
+            <button onclick="exportCSV('customers')" class="btn btn-outline" style="justify-content:flex-start; gap:16px; padding:16px 20px;">
+                <i data-feather="users" style="width:20px; color:var(--blue-neon);"></i>
+                <div style="text-align:left;">
+                    <div style="font-weight:700; color:#fff;">Müşteri Listesi (CSV)</div>
+                    <div style="font-size:0.75rem; color:var(--text-tertiary);">Firma ve yetkili bilgilerini indir</div>
+                </div>
+            </button>
+            <button onclick="exportCSV('products')" class="btn btn-outline" style="justify-content:flex-start; gap:16px; padding:16px 20px;">
+                <i data-feather="package" style="width:20px; color:var(--orange-neon);"></i>
+                <div style="text-align:left;">
+                    <div style="font-weight:700; color:#fff;">Ürün Kataloğu (CSV)</div>
+                    <div style="font-size:0.75rem; color:var(--text-tertiary);">Stok ve fiyat listesini indir</div>
+                </div>
+            </button>
+            <button onclick="exportCSV('employees')" class="btn btn-outline" style="justify-content:flex-start; gap:16px; padding:16px 20px;">
+                <i data-feather="user-check" style="width:20px; color:#a78bfa;"></i>
+                <div style="text-align:left;">
+                    <div style="font-weight:700; color:#fff;">Personel Listesi (CSV)</div>
+                    <div style="font-size:0.75rem; color:var(--text-tertiary);">Çalışan ve departman bilgilerini indir</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="app-wrapper" id="appContainer" style="display:none;">
+        <header class="header">
+            <div class="user-profile">
+                <div style="width:38px; height:38px; border-radius:12px; background:var(--grad-hero); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.85rem; color:#fff; letter-spacing:-0.02em; flex-shrink:0;">RS</div>
+                <div class="greeting">
+                    <span class="greeting-text" id="greetingText">Hoş Geldiniz,</span>
+                    <span class="greeting-name">RS Aydınlatma</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="openExport()" title="Dışa Aktar">
+                    <i data-feather="download"></i>
+                </button>
+                <button class="icon-btn" onclick="openNotifications()" id="notifBtn" title="Bildirimler" style="position:relative;">
+                    <i data-feather="bell"></i>
+                    <span id="notifBadge" style="position:absolute; top:4px; right:4px; width:8px; height:8px; background:var(--red-neon); border-radius:50%; border:2px solid var(--bg-surface);"></span>
+                </button>
+            </div>
+        </header>
+        <main id="mainContent" class="main-content"></main>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav" style="display:none;">
+        <button class="nav-btn active" data-page="dashboard" onclick="mobileNav('dashboard')">
+            <i data-feather="home"></i>
+        </button>
+        <button class="nav-btn" data-page="stats" onclick="mobileNav('stats')">
+            <i data-feather="bar-chart-2"></i>
+        </button>
+        <div class="fab-wrapper">
+            <button class="nav-fab" onclick="openFab()" id="fabBtn" style="transition:transform 0.3s ease;">
+                <i data-feather="plus" id="fabIcon"></i>
+            </button>
+        </div>
+        <button class="nav-btn" data-page="operations" onclick="mobileNav('operations')">
+            <i data-feather="grid"></i>
+        </button>
+        <button class="nav-btn" data-page="settings" onclick="mobileNav('settings')">
+            <i data-feather="settings"></i>
+        </button>
+    </nav>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="app-full.js"></script>
-</body>
+    <script>
+        feather.replace();
 
+        // ========================
+        // LOGIN LOGIC
+        // ========================
+        const CREDENTIALS = { user: 'admin', pass: 'rs2026' };
+
+        document.getElementById('loginPass').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doLogin();
+        });
+        document.getElementById('loginUser').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('loginPass').focus();
+        });
+
+        function togglePassword() {
+            const input = document.getElementById('loginPass');
+            const icon = document.getElementById('pwToggleIcon');
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            icon.setAttribute('data-feather', isHidden ? 'eye' : 'eye-off');
+            feather.replace();
+        }
+
+        function doLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            const btn = document.getElementById('loginBtn');
+            const errEl = document.getElementById('loginError');
+            const spinner = document.getElementById('loginSpinner');
+            const btnText = document.getElementById('loginBtnText');
+
+            // Show loading
+            btnText.style.display = 'none';
+            spinner.style.display = 'block';
+            errEl.style.display = 'none';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                btnText.style.display = 'block';
+                btn.disabled = false;
+
+                if (user === CREDENTIALS.user && pass === CREDENTIALS.pass) {
+                    // SUCCESS — Slide away login screen
+                    const ls = document.getElementById('loginScreen');
+                    ls.style.animation = 'slideOutUp 0.5s ease both';
+                    setTimeout(() => {
+                        ls.style.display = 'none';
+                        document.getElementById('appContainer').style.display = 'block';
+                        document.getElementById('bottomNav').style.display = 'flex';
+                        initApp();
+                        // Dynamic greeting
+                        const hr = new Date().getHours();
+                        document.getElementById('greetingText').textContent =
+                            hr < 12 ? 'Günaydın,' : hr < 17 ? 'İyi günler,' : 'İyi akşamlar,';
+                        feather.replace();
+                    }, 500);
+                } else {
+                    // FAIL — shake + error
+                    errEl.style.display = 'block';
+                    const form = document.querySelector('.login-form');
+                    form.classList.remove('shake');
+                    void form.offsetWidth; // reflow
+                    form.classList.add('shake');
+                    document.getElementById('loginPass').value = '';
+                    document.getElementById('loginPass').focus();
+                }
+            }, 900);
+        }
+
+        // ========================
+        // FAB ACTION SHEET
+        // ========================
+        function openFab() {
+            const actions = [
+                { icon: 'shopping-bag', label: 'Yeni Sipariş', desc: 'Hızlı satış kaydı oluştur', color: 'var(--blue-neon)', action: "closeFab(); mobileNav('satis')" },
+                { icon: 'user-plus', label: 'Müşteri Ekle', desc: 'Yeni firma veya bayi ekle', color: 'var(--orange-neon)', action: "closeFab(); mobileNav('add-customer')" },
+                { icon: 'package', label: 'Stok Girişi', desc: 'Ürün veya stok güncelle', color: 'var(--green-neon)', action: "closeFab(); mobileNav('uretim')" },
+                { icon: 'user-check', label: 'Personel Ekle', desc: 'Yeni çalışan kaydı', color: '#a78bfa', action: "closeFab(); mobileNav('add-employee')" },
+            ];
+            document.getElementById('fabActions').innerHTML = actions.map(a => `
+                <button onclick="${a.action}" style="display:flex; align-items:center; gap:16px; padding:16px 20px; background:var(--bg-surface-elevated); border:1px solid var(--border-light); border-radius:16px; cursor:pointer; text-align:left; width:100%;">
+                    <div style="width:44px; height:44px; border-radius:14px; background:${a.color}18; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:${a.color};">
+                        <i data-feather="${a.icon}" style="width:20px; height:20px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size:0.95rem; font-weight:700; color:#fff;">${a.label}</div>
+                        <div style="font-size:0.75rem; color:var(--text-tertiary); margin-top:2px;">${a.desc}</div>
+                    </div>
+                </button>
+            `).join('');
+            document.getElementById('fabOverlay').style.display = 'block';
+            document.getElementById('fabSheet').style.display = 'block';
+            document.getElementById('fabBtn').style.transform = 'rotate(45deg)';
+            feather.replace();
+        }
+        function closeFab() {
+            document.getElementById('fabOverlay').style.display = 'none';
+            document.getElementById('fabSheet').style.display = 'none';
+            document.getElementById('fabBtn').style.transform = 'rotate(0deg)';
+        }
+
+        // ========================
+        // BİLDİRİM PANELİ
+        // ========================
+        const notifications = [
+            { icon: 'alert-triangle', color: 'var(--red-neon)', title: 'Kritik Ödeme Vadesi', desc: 'Anadolu Cam borcu 3 gün içinde vadeli.', time: '14:30', unread: true },
+            { icon: 'package', color: 'var(--orange-neon)', title: 'Düşük Stok Uyarısı', desc: 'RS-EL-404 ürününde yalnızca 12 adet kaldı.', time: '12:15', unread: true },
+            { icon: 'shopping-bag', color: 'var(--blue-neon)', title: 'Yeni Sipariş Alındı', desc: 'Özgür İnşaat yeni proje siparişi verdi.', time: '09:48', unread: true },
+            { icon: 'check-circle', color: 'var(--green-neon)', title: 'Ödeme Onaylandı', desc: 'Ankara Avize Sarayı ödemesi alındı.', time: 'Dün', unread: false },
+            { icon: 'user-plus', color: '#a78bfa', title: 'Yeni Personel Kaydı', desc: 'Ayşe Demir sisteme eklendi.', time: 'Dün', unread: false },
+        ];
+        function openNotifications() {
+            document.getElementById('notifList').innerHTML = notifications.map(n => `
+                <div style="display:flex; gap:14px; padding:16px 0; border-bottom:1px solid var(--border-light); opacity:${n.unread ? 1 : 0.6};">
+                    <div style="width:40px; height:40px; border-radius:12px; background:${n.color}18; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:${n.color};">
+                        <i data-feather="${n.icon}" style="width:18px; height:18px;"></i>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:start; gap:8px;">
+                            <span style="font-size:0.85rem; font-weight:700; color:#fff;">${n.title}</span>
+                            <span style="font-size:0.65rem; color:var(--text-tertiary); flex-shrink:0;">${n.time}</span>
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:4px; line-height:1.4;">${n.desc}</div>
+                    </div>
+                    ${n.unread ? `<div style="width:8px; height:8px; border-radius:50%; background:var(--blue-neon); flex-shrink:0; margin-top:4px;"></div>` : ''}
+                </div>
+            `).join('');
+            document.getElementById('notifOverlay').style.display = 'block';
+            document.getElementById('notifPanel').style.display = 'block';
+            setTimeout(() => { document.getElementById('notifPanel').style.transform = 'translateX(0)'; }, 10);
+            feather.replace();
+            document.getElementById('notifBadge').style.display = 'none';
+        }
+        function closeNotifications() {
+            document.getElementById('notifPanel').style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.getElementById('notifOverlay').style.display = 'none';
+                document.getElementById('notifPanel').style.display = 'none';
+            }, 300);
+        }
+
+        // ========================
+        // EXPORT (CSV)
+        // ========================
+        function openExport() {
+            document.getElementById('exportOverlay').style.display = 'block';
+            document.getElementById('exportPanel').style.display = 'block';
+            feather.replace();
+        }
+        function closeExport() {
+            document.getElementById('exportOverlay').style.display = 'none';
+            document.getElementById('exportPanel').style.display = 'none';
+        }
+        function exportCSV(type) {
+            let rows = [], filename = '';
+            if (type === 'sales') {
+                filename = 'rs-satislar.csv';
+                rows = [['Sipariş No','Müşteri','Tutar','Tarih','Durum','Tip']];
+                AppData.sales.forEach(s => rows.push([s.id, getCustomerName(s.customerId), s.total, s.date, s.status, s.type]));
+            } else if (type === 'customers') {
+                filename = 'rs-musteriler.csv';
+                rows = [['ID','Firma Adı','Şehir','Tip','Yetkili','Telefon']];
+                AppData.customers.forEach(c => rows.push([c.id, c.name, c.city, c.type, c.contact, c.phone]));
+            } else if (type === 'products') {
+                filename = 'rs-urunler.csv';
+                rows = [['Kod','Ürün Adı','Kategori','Fiyat','Stok']];
+                AppData.products.forEach(p => rows.push([p.code, p.name, p.category, p.price, p.stock]));
+            } else if (type === 'employees') {
+                filename = 'rs-personel.csv';
+                rows = [['ID','Ad Soyad','Departman','Pozisyon','Rol','Durum']];
+                AppData.employees.forEach(e => rows.push([e.id, e.name, e.dept, e.pos, e.role || 'Kullanıcı', e.status]));
+            }
+            const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+            closeExport();
+            if (typeof showToast === 'function') showToast(filename + ' indirildi!');
+        }
+    </script>
+</body>
 </html>
