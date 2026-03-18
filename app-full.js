@@ -1095,6 +1095,10 @@ function renderAddEmployee() {
             </select>
         </div>
         <div class="form-group">
+            <label class="form-label">Şifre</label>
+            <input id="e_password" class="form-input" type="password" placeholder="Kullanıcı Şifresi (Örn: 123456)">
+        </div>
+        <div class="form-group">
             <label class="form-label">Maaş (₺)</label>
             <input id="e_salary" class="form-input" placeholder="Örn: 50000" type="number">
         </div>
@@ -1109,10 +1113,20 @@ function addEmployee() {
     const dept = document.getElementById('e_dept').value.trim();
     const pos = document.getElementById('e_pos').value.trim();
     const role = document.getElementById('e_role').value;
+    const password = document.getElementById('e_password').value.trim();
     const salary = parseFloat(document.getElementById('e_salary').value) || 0;
-    if (!name || !dept || !pos) { showToast('İsim, departman ve pozisyon zorunludur!', 'error'); return; }
+    
+    if (!name || !dept || !pos) { 
+        showToast('İsim, departman ve pozisyon zorunludur!', 'error'); 
+        return; 
+    }
+    if (role !== 'Kullanıcı' && !password) {
+         showToast('Satış, Muhasebe veya Yönetici rolleri için şifre zorunludur!', 'error'); 
+         return;
+    }
+
     const newId = Math.max(...AppData.employees.map(e=>e.id), 100) + 1;
-    AppData.employees.push({ id: newId, name, dept, pos, role, salary, status: 'Aktif' });
+    AppData.employees.push({ id: newId, name, dept, pos, role, password, salary, status: 'Aktif' });
     showToast('Personel başarıyla eklendi!');
     mobileNav('personel');
 }
